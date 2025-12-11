@@ -19,6 +19,14 @@ public class PlayerController : MonoBehaviour
 
     private bool _isGrounded;
 
+    //-----Player Hit-----
+    public float basicHitDamage;
+    public float heavyHitDamage;
+
+    private bool _canHitEnemy = false;
+
+    private EnemyController _enemyInRange;
+
     public float health;
 
     void FixedUpdate()
@@ -33,6 +41,22 @@ public class PlayerController : MonoBehaviour
     {
         moveDirection = (transform.forward * _inputVector.y) + (transform.right * _inputVector.x);
         rb.MovePosition(rb.position + moveDirection * (speed * Time.fixedDeltaTime));
+    }
+
+    private void DoBasicHit()
+    {
+        // TODO: animación de golpe
+
+        if (_canHitEnemy && _enemyInRange != null)
+            _enemyInRange.TakeDamage(basicHitDamage);
+    }
+
+    private void DoHeavyHit()
+    {
+        // TODO: animación de golpe
+
+        if (_canHitEnemy && _enemyInRange != null)
+            _enemyInRange.TakeDamage(heavyHitDamage);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -60,5 +84,33 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(groundCheck.position, groundRadius);
+    }
+
+    public void OnBasicHit(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            DoBasicHit();
+        }
+    }
+
+    public void OnHeavyHit(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            DoHeavyHit();
+        }
+    }
+
+    public void NotifyEnemyEnter(Collider enemy)
+    {
+        _canHitEnemy = true;
+        _enemyInRange = enemy.GetComponent<EnemyController>();
+    }
+
+    public void NotifyEnemyExit(Collider enemy)
+    {
+        _canHitEnemy = false;
+        _enemyInRange = null;
     }
 }
