@@ -6,7 +6,12 @@ public class HitBoxTrigger : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(TagsConstants.Enemy))
+        if (other.gameObject == player.gameObject)
+            return;
+        
+        IDamageable damageable = other.GetComponent<IDamageable>();
+
+        if (damageable != null)
         {
             player.NotifyEnemyEnter(other);
         }
@@ -14,7 +19,9 @@ public class HitBoxTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(TagsConstants.Enemy))
+        IDamageable damageable = other.GetComponent<IDamageable>();
+
+        if (damageable != null)
         {
             player.NotifyEnemyExit(other);
         }
