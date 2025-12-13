@@ -46,6 +46,18 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private IDamageable _targetInRange;
 
+    //-----Audio Source-----
+    [Header("Audio")] 
+    public AudioSource audioSource;
+
+    public AudioClip basicHitsFX;
+    public AudioClip heavyHitsFX;
+    public AudioClip missHitsFX;
+    public AudioClip heavyChargesFX;
+
+    [Header("Hit Stop")] 
+    public float hitStopDuration = 0.07f;
+    
     public float health;
 
     private void Awake()
@@ -86,7 +98,17 @@ public class PlayerController : MonoBehaviour, IDamageable
         // TODO: animación de golpe
 
         if (_canHitEnemy && _targetInRange != null)
+        {
+            audioSource.PlayOneShot(basicHitsFX);
+
+            StartCoroutine(HitsStop(hitStopDuration));
+            
             _targetInRange.TakeDamage(basicHitDamage, transform, knockbackBasicForce);
+        }
+        else
+        {
+            audioSource.PlayOneShot(missHitsFX);
+        }
     }
 
     private void DoHeavyHit()
@@ -152,15 +174,33 @@ public class PlayerController : MonoBehaviour, IDamageable
         _heavyChargeTimer = 0f;
 
         // TODO: animación de carga
-        // TODO: VFX / sonido de carga
+        if (heavyChargesFX != null)
+        {
+            audioSource.clip = heavyChargesFX;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
     }
     
     private void ExecuteHeavyHit()
     {
         _heavyHitExecuted = true;
         _isChargingHeavy = false;
+        
+        audioSource.Stop();
+        
+        if (_canHitEnemy && _targetInRange != null)
+        {
+            audioSource.PlayOneShot(heavyHitsFX);
 
-        DoHeavyHit();
+            StartCoroutine(HitsStop(hitStopDuration * 1.5f));
+
+            DoHeavyHit();
+        }
+        else
+        {
+            audioSource.PlayOneShot(missHitsFX);
+        }
 
         _heavyChargeTimer = 0f;
 
@@ -178,6 +218,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         _heavyChargeTimer = 0f;
 
         // TODO: animación de cancelación
+        audioSource.Stop();
+        audioSource.loop = false;
     }
 
     public void NotifyEnemyEnter(Collider other)
@@ -266,5 +308,12 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Debug.Log("Enemy died");
         Destroy(gameObject);
+    }
+
+    private IEnumerator HitsStop(float duration)
+    {
+        Time.timeScale = 0f;
+        yield return new WaitForSecondsRealtime(duration);
+        Time.timeScale = 1f;
     }
 }
