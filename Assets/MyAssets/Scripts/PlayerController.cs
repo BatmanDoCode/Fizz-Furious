@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -262,6 +263,15 @@ public class PlayerController : MonoBehaviour, IDamageable
         
         StartCoroutine(FlashDamage());
         ApplyKnockback(attacker, knockbackForce);
+
+        if (cameraShake != null)
+        {
+            float intensity = Mathf.Approximately(knockbackForce, knockbackHeavyForce) ? heavyShakeIntensity *1.2f : basicShakeIntensity * 1.1f;
+            
+            float duration = shakeDuration * 0.8f;
+            
+            cameraShake.Shake(intensity, duration);
+        }
 
         Debug.Log($"{gameObject.name} recibió daño. Vida: {health}");
 
