@@ -4,39 +4,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
-    #region === STATS ===
-
-    public float health;
-
-    #endregion
-
-    #region === DAMAGE RECEIVED ===
-
-    public void TakeDamage(float damage, Transform attacker, float knockbackForce)
-    {
-        health -= damage;
-
-        PlayHitFX(attacker, knockbackForce);
-        StartCoroutine(FlashDamage());
-        ApplyKnockback(attacker, knockbackForce);
-        ShakeOnHit(knockbackForce);
-
-        if (health <= 0)
-            Die();
-    }
-
-    #endregion
-
     #region === COMPONENTS ===
-
     public Rigidbody rb;
-    private MeshRenderer _meshRenderer;
+    [SerializeField] private MeshRenderer _meshRenderer;
     private Color _originalColor;
-
     #endregion
 
     #region === MOVEMENT ===
-
     private Vector2 _inputVector;
     public float speed;
 
@@ -46,11 +20,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     public LayerMask groundLayer;
 
     private bool _isGrounded;
-
     #endregion
 
     #region === COMBAT CONFIG ===
-
     public float basicHitDamage;
     public float heavyHitDamage;
 
@@ -59,55 +31,54 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float knockbackUpForce = 1.5f;
 
     public float heavyChargeTime = 1f;
-
     #endregion
 
     #region === COMBAT STATE ===
-
     private bool _canHitEnemy;
     private IDamageable _targetInRange;
 
     private bool _isChargingHeavy;
     private bool _heavyHitExecuted;
     private float _heavyChargeTimer;
-
     #endregion
 
     #region === FX ===
-
     public ParticleSystem basicHitFX;
     public ParticleSystem heavyHitFX;
-
     #endregion
 
     #region === AUDIO ===
-
-    [Header("Audio")] public AudioSource audioSource;
-
+    [Header("Audio")]
+    public AudioSource audioSource;
     public AudioClip basicHitsFX;
     public AudioClip heavyHitsFX;
     public AudioClip missHitsFX;
     public AudioClip heavyChargesFX;
+    #endregion
 
+    #region === FAKE ANIMATION === 
+    [Header("Fake Animation")]
+    [SerializeField] private FakeHitAnimation fakeHitAnimation;
     #endregion
 
     #region === CAMERA / HIT STOP ===
-
-    [Header("Camera Shake")] public CameraShake cameraShake;
-
+    [Header("Camera Shake")]
+    public CameraShake cameraShake;
     public float basicShakeIntensity = 0.08f;
     public float heavyShakeIntensity = 0.15f;
     public float shakeDuration = 0.15f;
 
-    [Header("Hit Stop")] public float hitStopDuration = 0.07f;
+    [Header("Hit Stop")]
+    public float hitStopDuration = 0.07f;
+    #endregion
 
+    #region === STATS ===
+    public float health;
     #endregion
 
     #region === UNITY CALLBACKS ===
-
     private void Awake()
     {
-        _meshRenderer = GetComponent<MeshRenderer>();
         _originalColor = _meshRenderer.material.color;
     }
 
@@ -121,11 +92,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         MovePlayer();
         CheckGround();
     }
-
     #endregion
 
     #region === INPUT CALLBACKS ===
-
     public void OnMove(InputAction.CallbackContext context)
     {
         if (context.performed || context.canceled)
@@ -152,15 +121,13 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (context.canceled)
             CancelHeavyCharge();
     }
-
     #endregion
 
     #region === MOVEMENT LOGIC ===
-
     private void MovePlayer()
     {
-        var direction = transform.forward * _inputVector.y +
-                        transform.right * _inputVector.x;
+        Vector3 direction = (transform.forward * _inputVector.y) +
+                            (transform.right * _inputVector.x);
 
         rb.MovePosition(rb.position + direction * (speed * Time.fixedDeltaTime));
     }
@@ -173,11 +140,9 @@ public class PlayerController : MonoBehaviour, IDamageable
             groundLayer
         );
     }
-
     #endregion
 
     #region === COMBAT LOGIC ===
-
     private void DoBasicHit()
     {
         if (!_canHitEnemy || _targetInRange == null)
@@ -205,11 +170,9 @@ public class PlayerController : MonoBehaviour, IDamageable
             knockbackHeavyForce
         );
     }
-
     #endregion
 
     #region === HEAVY ATTACK ===
-
     private void StartHeavyCharge()
     {
         _isChargingHeavy = true;
@@ -257,20 +220,37 @@ public class PlayerController : MonoBehaviour, IDamageable
         _heavyChargeTimer = 0f;
         StopLoopSound();
     }
+    #endregion
 
+    #region === DAMAGE RECEIVED ===
+    public void TakeDamage(float damage, Transform attacker, float knockbackForce)
+    {
+        health -= damage;
+
+        PlayHitFX(attacker, knockbackForce);
+        StartCoroutine(FlashDamage());
+        ApplyKnockback(attacker, knockbackForce);
+        
+        Vector3 hitDirection = (transform.position  - attacker.position).normalized;
+        fakeHitAnimation?.PlayHit(hitDirection);
+        
+        ShakeOnHit(knockbackForce);
+
+        if (health <= 0)
+            Die();
+    }
     #endregion
 
     #region === FEEDBACK ===
-
     private void PlayHitFX(Transform attacker, float force)
     {
-        var fx = Mathf.Approximately(force, knockbackHeavyForce)
+        ParticleSystem fx = Mathf.Approximately(force, knockbackHeavyForce)
             ? heavyHitFX
             : basicHitFX;
 
         if (fx == null) return;
 
-        var dir = (transform.position - attacker.position).normalized;
+        Vector3 dir = (transform.position - attacker.position).normalized;
         Instantiate(fx, transform.position + dir * 0.5f, Quaternion.LookRotation(dir));
     }
 
@@ -278,7 +258,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (cameraShake == null) return;
 
-        var intensity = Mathf.Approximately(force, knockbackHeavyForce)
+        float intensity = Mathf.Approximately(force, knockbackHeavyForce)
             ? heavyShakeIntensity * 1.2f
             : basicShakeIntensity;
 
@@ -298,11 +278,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         yield return new WaitForSecondsRealtime(duration);
         Time.timeScale = 1f;
     }
-
     #endregion
 
     #region === AUDIO HELPERS ===
-
     private void PlaySound(AudioClip clip)
     {
         if (clip != null)
@@ -323,15 +301,13 @@ public class PlayerController : MonoBehaviour, IDamageable
         audioSource.loop = false;
         audioSource.Stop();
     }
-
     #endregion
 
     #region === MISC ===
-
     private void ApplyKnockback(Transform attacker, float force)
     {
-        var dir = (transform.position - attacker.position).normalized;
-        var finalForce = dir * force;
+        Vector3 dir = (transform.position - attacker.position).normalized;
+        Vector3 finalForce = dir * force;
         finalForce.y = knockbackUpForce;
 
         rb.AddForce(finalForce, ForceMode.Impulse);
@@ -359,6 +335,5 @@ public class PlayerController : MonoBehaviour, IDamageable
             _targetInRange = null;
         }
     }
-
     #endregion
 }
