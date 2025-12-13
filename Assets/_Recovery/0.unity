@@ -763,8 +763,6 @@ MonoBehaviour:
   knockbackHeavyForce: 5
   knockbackUpForce: 1.5
   heavyChargeTime: 2
-  basicHitFX: {fileID: 2095606205811567574, guid: bddb971e34eb14d48be30c7b922eb077, type: 3}
-  heavyHitFX: {fileID: 5991545297567742199, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
   health: 100
 --- !u!54 &1135185591
 Rigidbody:
@@ -1115,8 +1113,6 @@ MonoBehaviour:
   knockbackHeavyForce: 5
   knockbackUpForce: 1.5
   heavyChargeTime: 2
-  basicHitFX: {fileID: 2095606205811567574, guid: bddb971e34eb14d48be30c7b922eb077, type: 3}
-  heavyHitFX: {fileID: 5991545297567742199, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
   health: 100
 --- !u!54 &1448206308
 Rigidbody:

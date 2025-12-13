@@ -37,6 +37,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     private bool _isChargingHeavy;
     private bool _heavyHitExecuted;
 
+    public ParticleSystem basicHitFX;
+    public ParticleSystem heavyHitFX;
+
     //-----Other player-----
     private MeshRenderer _meshRenderer;
     private Color _originalColor;
@@ -200,8 +203,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void TakeDamage(float damage, Transform attacker, float knockbackForce)
     {
         health -= damage;
-        StartCoroutine(FlashDamage());
+
+        PlayHitImpact(attacker, knockbackForce);
         
+        StartCoroutine(FlashDamage());
         ApplyKnockback(attacker, knockbackForce);
 
         Debug.Log($"{gameObject.name} recibió daño. Vida: {health}");
@@ -210,6 +215,29 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             Die();
         }
+    }
+
+    private void PlayHitImpact(Transform attraker, float knockbackForce)
+    {
+        ParticleSystem fxToUse = null;
+
+        if (Mathf.Approximately(knockbackForce, knockbackHeavyForce))
+        {
+            fxToUse = heavyHitFX;
+        }
+        else
+        {
+            fxToUse = basicHitFX;
+        }
+
+        if (fxToUse == null) return;
+
+        Vector3 hitDirection = (transform.position - attraker.position).normalized;
+        Vector3 spawnPosition = transform.position + hitDirection * 0.5f;
+
+        ParticleSystem fx = Instantiate(fxToUse, spawnPosition, Quaternion.LookRotation(hitDirection));
+        
+        Destroy(fx.gameObject, 1f);
     }
 
     private IEnumerator FlashDamage()
