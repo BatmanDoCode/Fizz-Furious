@@ -27,6 +27,16 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private bool _canHitEnemy = false;
 
+    public float knockbackBasicForce = 2f;
+    public float knockbackHeavyForce = 5f;
+    public float knockbackUpForce = 1.5f;
+
+    public float heavyChargeTime = 1f;
+
+    private float _heavyChargeTimer;
+    private bool _isChargingHeavy;
+    private bool _heavyHitExecuted;
+
     //-----Other player-----
     private MeshRenderer _meshRenderer;
     private Color _originalColor;
@@ -39,6 +49,19 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         _meshRenderer = GetComponent<MeshRenderer>();
         _originalColor = _meshRenderer.material.color;
+    }
+    
+    private void Update()
+    {
+        if (!_isChargingHeavy || _heavyHitExecuted)
+            return;
+
+        _heavyChargeTimer += Time.deltaTime;
+
+        if (_heavyChargeTimer >= heavyChargeTime)
+        {
+            ExecuteHeavyHit();
+        }
     }
 
     void FixedUpdate()
@@ -60,7 +83,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         // TODO: animación de golpe
 
         if (_canHitEnemy && _targetInRange != null)
-            _targetInRange.TakeDamage(basicHitDamage);
+            _targetInRange.TakeDamage(basicHitDamage, transform, knockbackBasicForce);
     }
 
     private void DoHeavyHit()
@@ -68,7 +91,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         // TODO: animación de golpe
 
         if (_canHitEnemy && _targetInRange != null)
-            _targetInRange.TakeDamage(heavyHitDamage);
+            _targetInRange.TakeDamage(heavyHitDamage, transform, knockbackHeavyForce);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -110,8 +133,48 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (context.started)
         {
-            DoHeavyHit();
+            StartHeavyCharge();
         }
+
+        if (context.canceled)
+        {
+            CancelHeavyCharge();
+        }
+    }
+    
+    private void StartHeavyCharge()
+    {
+        _isChargingHeavy = true;
+        _heavyHitExecuted = false;
+        _heavyChargeTimer = 0f;
+
+        // TODO: animación de carga
+        // TODO: VFX / sonido de carga
+    }
+    
+    private void ExecuteHeavyHit()
+    {
+        _heavyHitExecuted = true;
+        _isChargingHeavy = false;
+
+        DoHeavyHit();
+
+        _heavyChargeTimer = 0f;
+
+        // TODO: animación fuerte
+        // TODO: cámara shake
+        // TODO: sonido potente
+    }
+    
+    private void CancelHeavyCharge()
+    {
+        if (_heavyHitExecuted)
+            return;
+
+        _isChargingHeavy = false;
+        _heavyChargeTimer = 0f;
+
+        // TODO: animación de cancelación
     }
 
     public void NotifyEnemyEnter(Collider other)
@@ -134,10 +197,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, Transform attacker, float knockbackForce)
     {
         health -= damage;
         StartCoroutine(FlashDamage());
+        
+        ApplyKnockback(attacker, knockbackForce);
 
         Debug.Log($"{gameObject.name} recibió daño. Vida: {health}");
 
@@ -152,6 +217,21 @@ public class PlayerController : MonoBehaviour, IDamageable
         _meshRenderer.material.color = Color.white;
         yield return new WaitForSeconds(0.1f);
         _meshRenderer.material.color = _originalColor;
+    }
+    
+    private void ApplyKnockback(Transform attacker, float knockbackForce)
+    {
+        if (rb == null) return;
+
+        Vector3 direction = (transform.position - attacker.position).normalized;
+
+        // empuje horizontal
+        Vector3 force = direction * knockbackForce;
+
+        // pequeño empuje hacia arriba
+        force.y = knockbackUpForce;
+
+        rb.AddForce(force, ForceMode.Impulse);
     }
 
     private void Die()
