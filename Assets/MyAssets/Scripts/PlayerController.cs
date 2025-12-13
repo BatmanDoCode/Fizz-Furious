@@ -58,6 +58,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Hit Stop")] 
     public float hitStopDuration = 0.07f;
     
+    //-----Camera Shake-----
+    [Header("Camera Shake")] 
+    public CameraShake cameraShake;
+
+    public float basicShakeIntensity = 0.08f;
+    public float heavyShakeIntensity = 0.15f;
+    public float shakeDuration = 0.15f;
+    
     public float health;
 
     private void Awake()
@@ -102,6 +110,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             audioSource.PlayOneShot(basicHitsFX);
 
             StartCoroutine(HitsStop(hitStopDuration));
+            
+            cameraShake?.Shake(basicShakeIntensity, shakeDuration);
             
             _targetInRange.TakeDamage(basicHitDamage, transform, knockbackBasicForce);
         }
@@ -194,6 +204,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             audioSource.PlayOneShot(heavyHitsFX);
 
             StartCoroutine(HitsStop(hitStopDuration * 1.5f));
+            
+            cameraShake?.Shake(heavyShakeIntensity, shakeDuration * 1.2f);
 
             DoHeavyHit();
         }

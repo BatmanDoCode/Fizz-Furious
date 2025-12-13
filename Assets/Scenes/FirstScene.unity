@@ -770,6 +770,11 @@ MonoBehaviour:
   heavyHitsFX: {fileID: 0}
   missHitsFX: {fileID: 0}
   heavyChargesFX: {fileID: 0}
+  hitStopDuration: 0.07
+  cameraShake: {fileID: 0}
+  basicShakeIntensity: 0.08
+  heavyShakeIntensity: 0.15
+  shakeDuration: 0.15
   health: 100
 --- !u!54 &1135185591
 Rigidbody:
@@ -1128,6 +1133,11 @@ MonoBehaviour:
   heavyHitsFX: {fileID: 8300000, guid: 5174415e9879415498f7b0dd794d19c5, type: 3}
   missHitsFX: {fileID: 8300000, guid: bc742864e68de084ca074f2fffa86197, type: 3}
   heavyChargesFX: {fileID: 8300000, guid: 51e0a672984795b4087c49f005adf8f8, type: 3}
+  hitStopDuration: 0.07
+  cameraShake: {fileID: 2013593154}
+  basicShakeIntensity: 0.08
+  heavyShakeIntensity: 0.15
+  shakeDuration: 0.15
   health: 100
 --- !u!54 &1448206308
 Rigidbody:
@@ -1588,6 +1598,7 @@ GameObject:
   - component: {fileID: 2013593151}
   - component: {fileID: 2013593150}
   - component: {fileID: 2013593153}
+  - component: {fileID: 2013593154}
   m_Layer: 0
   m_Name: CameraPlayer_1
   m_TagString: MainCamera
@@ -1713,6 +1724,18 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &2013593154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013593149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d22b2f0f02cd1c46b2d17a7362cffc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
