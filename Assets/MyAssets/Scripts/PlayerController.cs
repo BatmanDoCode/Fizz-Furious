@@ -1,20 +1,45 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
-    //-----Components-----
+    #region === STATS ===
+
+    public float health;
+
+    #endregion
+
+    #region === DAMAGE RECEIVED ===
+
+    public void TakeDamage(float damage, Transform attacker, float knockbackForce)
+    {
+        health -= damage;
+
+        PlayHitFX(attacker, knockbackForce);
+        StartCoroutine(FlashDamage());
+        ApplyKnockback(attacker, knockbackForce);
+        ShakeOnHit(knockbackForce);
+
+        if (health <= 0)
+            Die();
+    }
+
+    #endregion
+
+    #region === COMPONENTS ===
+
     public Rigidbody rb;
+    private MeshRenderer _meshRenderer;
+    private Color _originalColor;
 
-    //-----Player Movement-----
+    #endregion
+
+    #region === MOVEMENT ===
+
     private Vector2 _inputVector;
-
     public float speed;
 
-    //-----Player Jump-----
     public float jumpForce;
     public Transform groundCheck;
     public float groundRadius;
@@ -22,11 +47,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private bool _isGrounded;
 
-    //-----Player Hit-----
+    #endregion
+
+    #region === COMBAT CONFIG ===
+
     public float basicHitDamage;
     public float heavyHitDamage;
-
-    private bool _canHitEnemy = false;
 
     public float knockbackBasicForce = 2f;
     public float knockbackHeavyForce = 5f;
@@ -34,48 +60,166 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public float heavyChargeTime = 1f;
 
-    private float _heavyChargeTimer;
+    #endregion
+
+    #region === COMBAT STATE ===
+
+    private bool _canHitEnemy;
+    private IDamageable _targetInRange;
+
     private bool _isChargingHeavy;
     private bool _heavyHitExecuted;
+    private float _heavyChargeTimer;
+
+    #endregion
+
+    #region === FX ===
 
     public ParticleSystem basicHitFX;
     public ParticleSystem heavyHitFX;
 
-    //-----Other player-----
-    private MeshRenderer _meshRenderer;
-    private Color _originalColor;
+    #endregion
 
-    private IDamageable _targetInRange;
+    #region === AUDIO ===
 
-    //-----Audio Source-----
-    [Header("Audio")] 
-    public AudioSource audioSource;
+    [Header("Audio")] public AudioSource audioSource;
 
     public AudioClip basicHitsFX;
     public AudioClip heavyHitsFX;
     public AudioClip missHitsFX;
     public AudioClip heavyChargesFX;
 
-    [Header("Hit Stop")] 
-    public float hitStopDuration = 0.07f;
-    
-    //-----Camera Shake-----
-    [Header("Camera Shake")] 
-    public CameraShake cameraShake;
+    #endregion
+
+    #region === CAMERA / HIT STOP ===
+
+    [Header("Camera Shake")] public CameraShake cameraShake;
 
     public float basicShakeIntensity = 0.08f;
     public float heavyShakeIntensity = 0.15f;
     public float shakeDuration = 0.15f;
-    
-    public float health;
+
+    [Header("Hit Stop")] public float hitStopDuration = 0.07f;
+
+    #endregion
+
+    #region === UNITY CALLBACKS ===
 
     private void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
         _originalColor = _meshRenderer.material.color;
     }
-    
+
     private void Update()
+    {
+        HandleHeavyCharge();
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
+        CheckGround();
+    }
+
+    #endregion
+
+    #region === INPUT CALLBACKS ===
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        if (context.performed || context.canceled)
+            _inputVector = context.ReadValue<Vector2>();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.started && _isGrounded)
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+
+    public void OnBasicHit(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            DoBasicHit();
+    }
+
+    public void OnHeavyHit(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            StartHeavyCharge();
+
+        if (context.canceled)
+            CancelHeavyCharge();
+    }
+
+    #endregion
+
+    #region === MOVEMENT LOGIC ===
+
+    private void MovePlayer()
+    {
+        var direction = transform.forward * _inputVector.y +
+                        transform.right * _inputVector.x;
+
+        rb.MovePosition(rb.position + direction * (speed * Time.fixedDeltaTime));
+    }
+
+    private void CheckGround()
+    {
+        _isGrounded = Physics.CheckSphere(
+            groundCheck.position,
+            groundRadius,
+            groundLayer
+        );
+    }
+
+    #endregion
+
+    #region === COMBAT LOGIC ===
+
+    private void DoBasicHit()
+    {
+        if (!_canHitEnemy || _targetInRange == null)
+        {
+            PlaySound(missHitsFX);
+            return;
+        }
+
+        PlaySound(basicHitsFX);
+        StartCoroutine(HitStop(hitStopDuration));
+        cameraShake?.Shake(basicShakeIntensity, shakeDuration);
+
+        _targetInRange.TakeDamage(
+            basicHitDamage,
+            transform,
+            knockbackBasicForce
+        );
+    }
+
+    private void DoHeavyHit()
+    {
+        _targetInRange.TakeDamage(
+            heavyHitDamage,
+            transform,
+            knockbackHeavyForce
+        );
+    }
+
+    #endregion
+
+    #region === HEAVY ATTACK ===
+
+    private void StartHeavyCharge()
+    {
+        _isChargingHeavy = true;
+        _heavyHitExecuted = false;
+        _heavyChargeTimer = 0f;
+
+        PlayLoopSound(heavyChargesFX);
+    }
+
+    private void HandleHeavyCharge()
     {
         if (!_isChargingHeavy || _heavyHitExecuted)
             return;
@@ -83,166 +227,127 @@ public class PlayerController : MonoBehaviour, IDamageable
         _heavyChargeTimer += Time.deltaTime;
 
         if (_heavyChargeTimer >= heavyChargeTime)
-        {
             ExecuteHeavyHit();
-        }
     }
 
-    void FixedUpdate()
-    {
-        Vector3 moveDirection = default;
-        MovePlayer(moveDirection);
-
-        _isGrounded = Physics.CheckSphere(groundCheck.position, groundRadius, groundLayer);
-    }
-
-    private void MovePlayer(Vector3 moveDirection)
-    {
-        moveDirection = (transform.forward * _inputVector.y) + (transform.right * _inputVector.x);
-        rb.MovePosition(rb.position + moveDirection * (speed * Time.fixedDeltaTime));
-    }
-
-    private void DoBasicHit()
-    {
-        // TODO: animación de golpe
-
-        if (_canHitEnemy && _targetInRange != null)
-        {
-            audioSource.PlayOneShot(basicHitsFX);
-
-            StartCoroutine(HitsStop(hitStopDuration));
-            
-            cameraShake?.Shake(basicShakeIntensity, shakeDuration);
-            
-            _targetInRange.TakeDamage(basicHitDamage, transform, knockbackBasicForce);
-        }
-        else
-        {
-            audioSource.PlayOneShot(missHitsFX);
-        }
-    }
-
-    private void DoHeavyHit()
-    {
-        // TODO: animación de golpe
-
-        if (_canHitEnemy && _targetInRange != null)
-            _targetInRange.TakeDamage(heavyHitDamage, transform, knockbackHeavyForce);
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        if (context.performed || context.canceled)
-        {
-            _inputVector = context.ReadValue<Vector2>();
-        }
-    }
-
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            if (_isGrounded)
-            {
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            }
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (groundCheck == null) return;
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(groundCheck.position, groundRadius);
-    }
-
-    public void OnBasicHit(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            DoBasicHit();
-        }
-    }
-
-    public void OnHeavyHit(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            StartHeavyCharge();
-        }
-
-        if (context.canceled)
-        {
-            CancelHeavyCharge();
-        }
-    }
-    
-    private void StartHeavyCharge()
-    {
-        _isChargingHeavy = true;
-        _heavyHitExecuted = false;
-        _heavyChargeTimer = 0f;
-
-        // TODO: animación de carga
-        if (heavyChargesFX != null)
-        {
-            audioSource.clip = heavyChargesFX;
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-    }
-    
     private void ExecuteHeavyHit()
     {
-        _heavyHitExecuted = true;
         _isChargingHeavy = false;
-        
-        audioSource.Stop();
-        
-        if (_canHitEnemy && _targetInRange != null)
-        {
-            audioSource.PlayOneShot(heavyHitsFX);
+        _heavyHitExecuted = true;
+        StopLoopSound();
 
-            StartCoroutine(HitsStop(hitStopDuration * 1.5f));
-            
-            cameraShake?.Shake(heavyShakeIntensity, shakeDuration * 1.2f);
-
-            DoHeavyHit();
-        }
-        else
+        if (!_canHitEnemy || _targetInRange == null)
         {
-            audioSource.PlayOneShot(missHitsFX);
+            PlaySound(missHitsFX);
+            return;
         }
 
-        _heavyChargeTimer = 0f;
+        PlaySound(heavyHitsFX);
+        StartCoroutine(HitStop(hitStopDuration * 1.5f));
+        cameraShake?.Shake(heavyShakeIntensity, shakeDuration * 1.2f);
 
-        // TODO: animación fuerte
-        // TODO: cámara shake
-        // TODO: sonido potente
+        DoHeavyHit();
     }
-    
+
     private void CancelHeavyCharge()
     {
-        if (_heavyHitExecuted)
-            return;
+        if (_heavyHitExecuted) return;
 
         _isChargingHeavy = false;
         _heavyChargeTimer = 0f;
+        StopLoopSound();
+    }
 
-        // TODO: animación de cancelación
-        audioSource.Stop();
+    #endregion
+
+    #region === FEEDBACK ===
+
+    private void PlayHitFX(Transform attacker, float force)
+    {
+        var fx = Mathf.Approximately(force, knockbackHeavyForce)
+            ? heavyHitFX
+            : basicHitFX;
+
+        if (fx == null) return;
+
+        var dir = (transform.position - attacker.position).normalized;
+        Instantiate(fx, transform.position + dir * 0.5f, Quaternion.LookRotation(dir));
+    }
+
+    private void ShakeOnHit(float force)
+    {
+        if (cameraShake == null) return;
+
+        var intensity = Mathf.Approximately(force, knockbackHeavyForce)
+            ? heavyShakeIntensity * 1.2f
+            : basicShakeIntensity;
+
+        cameraShake.Shake(intensity, shakeDuration * 0.8f);
+    }
+
+    private IEnumerator FlashDamage()
+    {
+        _meshRenderer.material.color = Color.white;
+        yield return new WaitForSeconds(0.1f);
+        _meshRenderer.material.color = _originalColor;
+    }
+
+    private IEnumerator HitStop(float duration)
+    {
+        Time.timeScale = 0f;
+        yield return new WaitForSecondsRealtime(duration);
+        Time.timeScale = 1f;
+    }
+
+    #endregion
+
+    #region === AUDIO HELPERS ===
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+            audioSource.PlayOneShot(clip);
+    }
+
+    private void PlayLoopSound(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        audioSource.clip = clip;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
+    private void StopLoopSound()
+    {
         audioSource.loop = false;
+        audioSource.Stop();
+    }
+
+    #endregion
+
+    #region === MISC ===
+
+    private void ApplyKnockback(Transform attacker, float force)
+    {
+        var dir = (transform.position - attacker.position).normalized;
+        var finalForce = dir * force;
+        finalForce.y = knockbackUpForce;
+
+        rb.AddForce(finalForce, ForceMode.Impulse);
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 
     public void NotifyEnemyEnter(Collider other)
     {
-        IDamageable damageable = other.GetComponent<IDamageable>();
-
-        if (damageable != null && other.gameObject != gameObject)
+        if (other.TryGetComponent(out IDamageable dmg) && other.gameObject != gameObject)
         {
             _canHitEnemy = true;
-            _targetInRange = damageable;
+            _targetInRange = dmg;
         }
     }
 
@@ -255,87 +360,5 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
-    public void TakeDamage(float damage, Transform attacker, float knockbackForce)
-    {
-        health -= damage;
-
-        PlayHitImpact(attacker, knockbackForce);
-        
-        StartCoroutine(FlashDamage());
-        ApplyKnockback(attacker, knockbackForce);
-
-        if (cameraShake != null)
-        {
-            float intensity = Mathf.Approximately(knockbackForce, knockbackHeavyForce) ? heavyShakeIntensity *1.2f : basicShakeIntensity * 1.1f;
-            
-            float duration = shakeDuration * 0.8f;
-            
-            cameraShake.Shake(intensity, duration);
-        }
-
-        Debug.Log($"{gameObject.name} recibió daño. Vida: {health}");
-
-        if (health <= 0)
-        {
-            Die();
-        }
-    }
-
-    private void PlayHitImpact(Transform attraker, float knockbackForce)
-    {
-        ParticleSystem fxToUse = null;
-
-        if (Mathf.Approximately(knockbackForce, knockbackHeavyForce))
-        {
-            fxToUse = heavyHitFX;
-        }
-        else
-        {
-            fxToUse = basicHitFX;
-        }
-
-        if (fxToUse == null) return;
-
-        Vector3 hitDirection = (transform.position - attraker.position).normalized;
-        Vector3 spawnPosition = transform.position + hitDirection * 0.5f;
-
-        ParticleSystem fx = Instantiate(fxToUse, spawnPosition, Quaternion.LookRotation(hitDirection));
-        
-        Destroy(fx.gameObject, 1f);
-    }
-
-    private IEnumerator FlashDamage()
-    {
-        _meshRenderer.material.color = Color.white;
-        yield return new WaitForSeconds(0.1f);
-        _meshRenderer.material.color = _originalColor;
-    }
-    
-    private void ApplyKnockback(Transform attacker, float knockbackForce)
-    {
-        if (rb == null) return;
-
-        Vector3 direction = (transform.position - attacker.position).normalized;
-
-        // empuje horizontal
-        Vector3 force = direction * knockbackForce;
-
-        // pequeño empuje hacia arriba
-        force.y = knockbackUpForce;
-
-        rb.AddForce(force, ForceMode.Impulse);
-    }
-
-    private void Die()
-    {
-        Debug.Log("Enemy died");
-        Destroy(gameObject);
-    }
-
-    private IEnumerator HitsStop(float duration)
-    {
-        Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(duration);
-        Time.timeScale = 1f;
-    }
+    #endregion
 }

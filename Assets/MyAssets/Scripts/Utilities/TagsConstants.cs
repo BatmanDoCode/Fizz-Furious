@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class TagsConstants
 {
     public const string Player = "Player";

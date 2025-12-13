@@ -763,6 +763,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb2bf23e4d31e39409102dfde5d6de21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  health: 100
   rb: {fileID: 1135185591}
   speed: 5
   jumpForce: 6
@@ -784,12 +785,11 @@ MonoBehaviour:
   heavyHitsFX: {fileID: 8300000, guid: 5174415e9879415498f7b0dd794d19c5, type: 3}
   missHitsFX: {fileID: 8300000, guid: bc742864e68de084ca074f2fffa86197, type: 3}
   heavyChargesFX: {fileID: 8300000, guid: 51e0a672984795b4087c49f005adf8f8, type: 3}
-  hitStopDuration: 0.07
   cameraShake: {fileID: 552587535}
   basicShakeIntensity: 0.08
   heavyShakeIntensity: 0.15
   shakeDuration: 0.15
-  health: 100
+  hitStopDuration: 0.07
 --- !u!54 &1135185591
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1223,6 +1223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb2bf23e4d31e39409102dfde5d6de21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  health: 100
   rb: {fileID: 1448206308}
   speed: 5
   jumpForce: 6
@@ -1236,7 +1237,7 @@ MonoBehaviour:
   knockbackBasicForce: 2
   knockbackHeavyForce: 5
   knockbackUpForce: 1.5
-  heavyChargeTime: 2
+  heavyChargeTime: 1
   basicHitFX: {fileID: 2095606205811567574, guid: bddb971e34eb14d48be30c7b922eb077, type: 3}
   heavyHitFX: {fileID: 5991545297567742199, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
   audioSource: {fileID: 1448206313}
@@ -1244,12 +1245,11 @@ MonoBehaviour:
   heavyHitsFX: {fileID: 8300000, guid: 5174415e9879415498f7b0dd794d19c5, type: 3}
   missHitsFX: {fileID: 8300000, guid: bc742864e68de084ca074f2fffa86197, type: 3}
   heavyChargesFX: {fileID: 8300000, guid: 51e0a672984795b4087c49f005adf8f8, type: 3}
-  hitStopDuration: 0.07
   cameraShake: {fileID: 2013593154}
   basicShakeIntensity: 0.08
   heavyShakeIntensity: 0.15
   shakeDuration: 0.15
-  health: 100
+  hitStopDuration: 0.07
 --- !u!54 &1448206308
 Rigidbody:
   m_ObjectHideFlags: 0

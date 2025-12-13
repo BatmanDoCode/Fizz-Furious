@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -20,12 +19,9 @@ public class EnemyController : MonoBehaviour
         health -= damage;
         StartCoroutine(FlashDamage());
 
-        if (health <= 0)
-        {
-            Die();
-        }
+        if (health <= 0) Die();
     }
-    
+
     private IEnumerator FlashDamage()
     {
         _meshRenderer.material.color = Color.white;

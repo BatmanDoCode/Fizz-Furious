@@ -3,27 +3,21 @@ using UnityEngine;
 public class HitBoxTrigger : MonoBehaviour
 {
     public PlayerController player;
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == player.gameObject)
             return;
-        
-        IDamageable damageable = other.GetComponent<IDamageable>();
 
-        if (damageable != null)
-        {
-            player.NotifyEnemyEnter(other);
-        }
+        var damageable = other.GetComponent<IDamageable>();
+
+        if (damageable != null) player.NotifyEnemyEnter(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        IDamageable damageable = other.GetComponent<IDamageable>();
+        var damageable = other.GetComponent<IDamageable>();
 
-        if (damageable != null)
-        {
-            player.NotifyEnemyExit(other);
-        }
-    } 
+        if (damageable != null) player.NotifyEnemyExit(other);
+    }
 }
