@@ -435,13 +435,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 552587530}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2679447, y: -0, z: -0, w: 0.96343434}
-  m_LocalPosition: {x: 0, y: 2.7400002, z: -4.54}
+  m_LocalRotation: {x: 0.34822273, y: -0, z: -0, w: 0.93741184}
+  m_LocalPosition: {x: 0, y: 6.46, z: -5.28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1135185595}
-  m_LocalEulerAnglesHint: {x: 31.084, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 40.757, y: 0, z: 0}
 --- !u!114 &552587532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -882,6 +882,26 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 57c2478b-7eac-4fd2-ae45-9329f1a06817
     m_ActionName: 'Player_2/Heavy Hit[/Keyboard/o]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ca2dd2e9-6db9-443f-9727-e172e6613047
+    m_ActionName: 'Player/Run[/Keyboard/leftShift]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1135185590}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnRun
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e0428e7e-264a-45f1-95f0-48ea000fb323
+    m_ActionName: 'Player_2/Run[/Keyboard/shift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player_2
@@ -908,6 +928,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  walkSpeed: 5
+  runSpeed: 8
+  maxStamina: 100
+  staminaDrainPerSecond: 30
+  staminaRegenPerSecond: 20
   basicHitDamage: 10
   heavyHitDamage: 30
   knockbackBasicForce: 2
@@ -1376,6 +1401,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 57c2478b-7eac-4fd2-ae45-9329f1a06817
     m_ActionName: 'Player_2/Heavy Hit[/Keyboard/o]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1448206307}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnRun
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ca2dd2e9-6db9-443f-9727-e172e6613047
+    m_ActionName: 'Player/Run[/Keyboard/leftShift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1402,6 +1443,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  walkSpeed: 5
+  runSpeed: 8
+  maxStamina: 100
+  staminaDrainPerSecond: 30
+  staminaRegenPerSecond: 20
   basicHitDamage: 10
   heavyHitDamage: 30
   knockbackBasicForce: 2
@@ -1901,13 +1947,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2013593149}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2679447, y: -0, z: -0, w: 0.96343434}
-  m_LocalPosition: {x: 0, y: 2.7400002, z: -4.54}
+  m_LocalRotation: {x: 0.34746993, y: -0, z: -0, w: 0.9376911}
+  m_LocalPosition: {x: 0, y: 6.85, z: -5.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1448206312}
-  m_LocalEulerAnglesHint: {x: 31.084, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 40.665, y: 0, z: 0}
 --- !u!114 &2013593153
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,6 +21,20 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private bool _isGrounded;
     #endregion
+    
+    #region === RUN / STAMINA ===
+
+    [Header("Run / Stamina")] 
+    public float walkSpeed = 5f;
+    public float runSpeed = 8f;
+
+    public float maxStamina = 100f;
+    public float staminaDrainPerSecond = 30f;
+    public float staminaRegenPerSecond = 20f;
+    
+    private float _currentStamina;
+    private bool _isRunning;
+    #endregion
 
     #region === COMBAT CONFIG ===
     public float basicHitDamage;
@@ -80,11 +94,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void Awake()
     {
         _originalColor = _meshRenderer.material.color;
+        
+        _currentStamina = maxStamina;
     }
 
     private void Update()
     {
         HandleHeavyCharge();
+        HandleStamina();
     }
 
     private void FixedUpdate()
@@ -99,6 +116,15 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (context.performed || context.canceled)
             _inputVector = context.ReadValue<Vector2>();
+    }
+
+    public void OnRun(InputAction.CallbackContext context)
+    {
+        if (context.started && _currentStamina > 0f)
+            _isRunning = true;
+        
+        if (context.canceled)
+            _isRunning = false;
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -128,8 +154,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Vector3 direction = (transform.forward * _inputVector.y) +
                             (transform.right * _inputVector.x);
+        
+        float currentSpeed = _isRunning && _currentStamina > 0f ? runSpeed : walkSpeed;
 
-        rb.MovePosition(rb.position + direction * (speed * Time.fixedDeltaTime));
+        rb.MovePosition(rb.position + direction * (currentSpeed * Time.fixedDeltaTime));
     }
 
     private void CheckGround()
@@ -139,6 +167,27 @@ public class PlayerController : MonoBehaviour, IDamageable
             groundRadius,
             groundLayer
         );
+    }
+    #endregion
+    
+    #region === STAMINA LOGIC ===
+    private void HandleStamina()
+    {
+        if (_isRunning && _inputVector.magnitude > 0.1f)
+        {
+            _currentStamina -= staminaDrainPerSecond * Time.deltaTime;
+
+            if (_currentStamina <= 0f)
+            {
+                _currentStamina = 0f;
+                _isRunning = false;
+            }
+        }
+        else
+        {
+            _currentStamina += staminaRegenPerSecond * Time.deltaTime;
+            _currentStamina = Mathf.Clamp(_currentStamina, 0f, maxStamina);
+        }
     }
     #endregion
 
