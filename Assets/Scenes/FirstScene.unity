@@ -994,6 +994,7 @@ MonoBehaviour:
   maxStamina: 100
   staminaDrainPerSecond: 30
   staminaRegenPerSecond: 20
+  _currentStamina: 0
   basicHitDamage: 10
   heavyHitDamage: 30
   knockbackBasicForce: 2
@@ -1349,7 +1350,7 @@ GameObject:
   - component: {fileID: 1403566673}
   - component: {fileID: 1403566672}
   - component: {fileID: 1403566671}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1590,6 +1591,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: ca2dd2e9-6db9-443f-9727-e172e6613047
     m_ActionName: 'Player/Run[/Keyboard/leftShift]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e0428e7e-264a-45f1-95f0-48ea000fb323
+    m_ActionName: 'Player_2/Run[/Keyboard/shift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1621,6 +1626,7 @@ MonoBehaviour:
   maxStamina: 100
   staminaDrainPerSecond: 30
   staminaRegenPerSecond: 20
+  _currentStamina: 0
   basicHitDamage: 10
   heavyHitDamage: 30
   knockbackBasicForce: 2

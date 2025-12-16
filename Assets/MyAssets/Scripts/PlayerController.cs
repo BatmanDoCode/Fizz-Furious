@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float staminaDrainPerSecond = 30f;
     public float staminaRegenPerSecond = 20f;
 
-    private float _currentStamina;
+    [SerializeField]private float _currentStamina;
     private bool _isRunning;
 
     #endregion
@@ -397,7 +397,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (fx == null) return;
 
         Vector3 dir = (transform.position - attacker.position).normalized;
-        Instantiate(fx, transform.position + dir * 0.5f, Quaternion.LookRotation(dir));
+        ParticleSystem instance = Instantiate(fx, transform.position + dir * 0.5f, Quaternion.LookRotation(dir));
+        
+        Destroy(instance.gameObject, instance.main.duration + instance.main.startLifetime.constantMax);
     }
 
     private void ShakeOnHit(float force)
