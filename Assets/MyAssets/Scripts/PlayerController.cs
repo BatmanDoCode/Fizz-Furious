@@ -106,7 +106,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #region === STATS ===
 
-    public float health;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float currentHealth;
 
     #endregion
 
@@ -117,6 +118,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         _originalColor = _meshRenderer.material.color;
 
         _currentStamina = maxStamina;
+        
+        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -172,6 +175,18 @@ public class PlayerController : MonoBehaviour, IDamageable
             CancelHeavyCharge();
     }
 
+    #endregion
+    
+    #region === HEALTH LOGIC ===
+    public void Heal(float healAmount, float maxHealhReduction)
+    {
+        maxHealth -= maxHealhReduction;
+        maxHealth = Mathf.Max(maxHealth, 10f);
+
+        currentHealth += healAmount;
+        
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    }
     #endregion
 
     #region === MOVEMENT LOGIC ===
@@ -308,7 +323,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage, Transform attacker, float knockbackForce)
     {
-        health -= damage;
+        currentHealth -= damage;
 
         PlayHitFX(attacker, knockbackForce);
         StartCoroutine(FlashDamage());
@@ -319,7 +334,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         ShakeOnHit(knockbackForce);
 
-        if (health <= 0)
+        if (currentHealth <= 0)
             Die();
     }
 
