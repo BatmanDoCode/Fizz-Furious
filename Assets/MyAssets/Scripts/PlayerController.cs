@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float staminaDrainPerSecond = 30f;
     public float staminaRegenPerSecond = 20f;
 
-    private float _currentStamina;
+    [SerializeField]private float _currentStamina;
     private bool _isRunning;
 
     #endregion
@@ -106,7 +106,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #region === STATS ===
 
-    public float health;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float currentHealth;
 
     #endregion
 
@@ -117,6 +118,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         _originalColor = _meshRenderer.material.color;
 
         _currentStamina = maxStamina;
+        
+        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -172,6 +175,18 @@ public class PlayerController : MonoBehaviour, IDamageable
             CancelHeavyCharge();
     }
 
+    #endregion
+    
+    #region === HEALTH LOGIC ===
+    public void Heal(float healAmount, float maxHealhReduction)
+    {
+        maxHealth -= maxHealhReduction;
+        maxHealth = Mathf.Max(maxHealth, 10f);
+
+        currentHealth += healAmount;
+        
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    }
     #endregion
 
     #region === MOVEMENT LOGIC ===
@@ -308,7 +323,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage, Transform attacker, float knockbackForce)
     {
-        health -= damage;
+        currentHealth -= damage;
 
         PlayHitFX(attacker, knockbackForce);
         StartCoroutine(FlashDamage());
@@ -319,7 +334,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         ShakeOnHit(knockbackForce);
 
-        if (health <= 0)
+        if (currentHealth <= 0)
             Die();
     }
 
@@ -397,7 +412,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (fx == null) return;
 
         Vector3 dir = (transform.position - attacker.position).normalized;
-        Instantiate(fx, transform.position + dir * 0.5f, Quaternion.LookRotation(dir));
+        ParticleSystem instance = Instantiate(fx, transform.position + dir * 0.5f, Quaternion.LookRotation(dir));
+        
+        Destroy(instance.gameObject, instance.main.duration + instance.main.startLifetime.constantMax);
     }
 
     private void ShakeOnHit(float force)
