@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Book 2
+  m_Name: Control
   m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
-  m_Parent: {fileID: 2100000, guid: 312f87b4df999ce45bf6603961d7ac97, type: 2}
+  m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -23,19 +23,36 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Glow_Size: 0
-    - _Highlight_Intensity: 0.01
-    - _Highlight_Size: 0.1
-    - _Outline_Size: 0.1
-    - _Shadows_Contrast: 0.36
+    - _Highlight_Intensity: 0.03
+    - _Highlight_Size: 0.3
+    - _Outline_Size: 0.2
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Shadows_Contrast: 3
+    - _Shadows_Size: 1
+    - _XRMotionVectorsPass: 1
     m_Colors:
-    - _Base_Color: {r: 0.9622642, g: 0.40396938, b: 0.41491643, a: 1}
+    - _Base_Color: {r: 0, g: 0, b: 0, a: 1}
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 0}
-    - _Outline_Color: {r: 0.3207547, g: 0.0045389733, b: 0.009024177, a: 1}
-    - _Shadows_Color: {r: 0.5566038, g: 0.002625496, b: 0.013487914, a: 0}
+    - _Highlight_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Outline_Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Shadows_Color: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7523208459516627033
