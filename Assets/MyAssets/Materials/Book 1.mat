@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Book 1
-  m_Shader: {fileID: -6465566751694194690, guid: bf13e9163ea4ce441ad7525bc2ebae84, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -48,7 +48,7 @@ Material:
     - _Shadows_Size: 1
     - _XRMotionVectorsPass: 1
     m_Colors:
-    - _Base_Color: {r: 0.034784317, g: 0, b: 1, a: 1}
+    - _Base_Color: {r: 0.47669256, g: 0.4575472, b: 1, a: 1}
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 0}
     - _Highlight_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Outline_Color: {r: 0.027450982, g: 0.011764707, b: 0.38823533, a: 1}

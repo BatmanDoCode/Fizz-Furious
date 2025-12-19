@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Toon 16
-  m_Shader: {fileID: -6465566751694194690, guid: bf13e9163ea4ce441ad7525bc2ebae84, type: 3}
+  m_Name: coffeeTable
+  m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,21 +38,20 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Glow_Size: 0.05
-    - _Highlight_Intensity: 0.1
-    - _Highlight_Size: -1
-    - _Outline_Size: 0.1
+    - _Glow_Size: 0.11
+    - _Highlight_Intensity: 0.18
+    - _Highlight_Size: 0.2
+    - _Outline_Size: 0.15
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Shadows_Contrast: 0.39
-    - _Shadows_Size: 1
-    - _XRMotionVectorsPass: 1
+    - _Shadows_Contrast: 0.5
+    - _Shadows_Size: 0.32
     m_Colors:
-    - _Base_Color: {r: 0.7216981, g: 0.9971274, b: 1, a: 0}
-    - _HighlightColor: {r: 1, g: 1, b: 1, a: 0}
-    - _Highlight_Color: {r: 0.8537736, g: 0.9979405, b: 1, a: 0}
-    - _Outline_Color: {r: 0.4061944, g: 0.5256474, b: 0.5283019, a: 1}
-    - _Shadows_Color: {r: 0.51699895, g: 0.6955623, b: 0.6981132, a: 0}
+    - _Base_Color: {r: 0.2901961, g: 0.3529412, b: 0.41568628, a: 0}
+    - _HighlightColor: {r: 1, g: 0.7858338, b: 0, a: 1}
+    - _Highlight_Color: {r: 0.4289338, g: 0.45503294, b: 0.4811321, a: 0}
+    - _Outline_Color: {r: 0.21960786, g: 0.26666668, b: 0.30980393, a: 1}
+    - _Shadows_Color: {r: 0.21880564, g: 0.26506323, b: 0.31132078, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7523208459516627033

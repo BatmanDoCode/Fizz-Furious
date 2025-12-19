@@ -40,6 +40,8 @@ public class GameManager : MonoBehaviour
         
         DisableLoserCameras(winner);
 
+        winner.Celebrate();
+
         Time.timeScale = 0.6f;
     }
     

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Toon 15
-  m_Shader: {fileID: -6465566751694194690, guid: bf13e9163ea4ce441ad7525bc2ebae84, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []

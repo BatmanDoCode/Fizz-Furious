@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PurpleBox
-  m_Shader: {fileID: -6465566751694194690, guid: bf13e9163ea4ce441ad7525bc2ebae84, type: 3}
+  m_Name: Lamp
+  m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,21 +38,20 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Glow_Size: 0.1
-    - _Highlight_Intensity: 0.55
-    - _Highlight_Size: 0.4
-    - _Outline_Size: 0.2
+    - _Glow_Size: 0.08
+    - _Highlight_Intensity: 0.11
+    - _Highlight_Size: 0.1
+    - _Outline_Size: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Shadows_Contrast: 0.3
-    - _Shadows_Size: 0.1
-    - _XRMotionVectorsPass: 1
+    - _Shadows_Contrast: 1.41
+    - _Shadows_Size: 0.59
     m_Colors:
-    - _Base_Color: {r: 0.5294118, g: 0.16862746, b: 0.6901961, a: 0}
-    - _HighlightColor: {r: 1, g: 1, b: 1, a: 0}
-    - _Highlight_Color: {r: 0.7547014, g: 0.31011927, b: 0.9528302, a: 0}
-    - _Outline_Color: {r: 0.34112054, g: 0.019624414, b: 0.46226418, a: 1}
-    - _Shadows_Color: {r: 0.4018189, g: 0.12971699, b: 0.5, a: 0}
+    - _Base_Color: {r: 1, g: 0.8509804, b: 0.4, a: 0}
+    - _HighlightColor: {r: 1, g: 0.7858338, b: 0, a: 1}
+    - _Highlight_Color: {r: 1, g: 0.92150694, b: 0.6839622, a: 0}
+    - _Outline_Color: {r: 0.9803922, g: 0.7686275, b: 0.1254902, a: 1}
+    - _Shadows_Color: {r: 0.9811321, g: 0.76848686, b: 0.124955505, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7523208459516627033

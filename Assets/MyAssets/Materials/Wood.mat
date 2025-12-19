@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Wood
-  m_Shader: {fileID: -6465566751694194690, guid: bf13e9163ea4ce441ad7525bc2ebae84, type: 3}
-  m_Parent: {fileID: 0}
+  m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
+  m_Parent: {fileID: 2100000, guid: 72c3c765a25ab8f4ca9c3de12c12d994, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -23,30 +23,15 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
     m_Ints: []
     m_Floats:
     - _Glow_Size: 0.1
     - _Highlight_Intensity: 0.1
     - _Highlight_Size: 0.1
     - _Outline_Size: 0.1
-    - _QueueControl: 0
-    - _QueueOffset: 0
     - _Shadows_Contrast: 0.3
     - _Shadows_Size: 0.1
-    - _XRMotionVectorsPass: 1
     m_Colors:
     - _Base_Color: {r: 0.93725497, g: 0.6666667, b: 0.41960788, a: 0}
     - _HighlightColor: {r: 0.7960785, g: 0.65882355, b: 0.5137255, a: 0}

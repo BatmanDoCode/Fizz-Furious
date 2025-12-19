@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Toon 3
-  m_Shader: {fileID: -6465566751694194690, guid: bf13e9163ea4ce441ad7525bc2ebae84, type: 3}
+  m_Name: Glass
+  m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,20 +38,20 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Glow_Size: 0
-    - _Highlight_Intensity: 0.03
-    - _Highlight_Size: 0.5
-    - _Outline_Size: -1
+    - _Glow_Size: 0.116
+    - _Highlight_Intensity: 0.37
+    - _Highlight_Size: 0.46
+    - _Outline_Size: 0.4
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Shadows_Contrast: 3
+    - _Shadows_Contrast: 0.3
     - _Shadows_Size: 1
     m_Colors:
-    - _Base_Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 0}
-    - _Highlight_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Outline_Color: {r: 0, g: 0, b: 0, a: 1}
-    - _Shadows_Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Highlight_Color: {r: 0.9955053, g: 0.9372549, b: 1, a: 0}
+    - _Outline_Color: {r: 0.7494952, g: 0.7471965, b: 0.8207547, a: 1}
+    - _Shadows_Color: {r: 0.6414733, g: 0.63234246, b: 0.9245283, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7523208459516627033

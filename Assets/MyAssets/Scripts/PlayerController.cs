@@ -42,6 +42,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #endregion
 
+    #region === ANIMATION ===
+
+    public Animator animator;
+
+    #endregion
+
     #region === COMBAT CONFIG ===
 
     public float basicHitDamage;
@@ -117,9 +123,12 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         _originalColor = _meshRenderer.material.color;
 
+        animator = GetComponentInChildren<Animator>();
+
         _currentStamina = maxStamina;
         
         currentHealth = maxHealth;
+
     }
 
     private void Update()
@@ -157,7 +166,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void OnJump(InputAction.CallbackContext context)
     {
         if (context.started && _isGrounded)
+            { 
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            animator.SetBool("IsJumping", true);
+            }   
     }
 
     public void OnBasicHit(InputAction.CallbackContext context)
@@ -198,6 +210,18 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         float currentSpeed = _isRunning && _currentStamina > 0f ? runSpeed : walkSpeed;
 
+        if (_isGrounded) 
+        {
+            float animationSpeed = _inputVector.magnitude * currentSpeed;
+            animator.SetFloat("Speed", animationSpeed);
+            animator.SetBool("IsRunning", _isRunning && _inputVector.magnitude > 0.1f);
+        }
+        else 
+        {
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("IsRunning", false);
+        }
+
         rb.MovePosition(rb.position + direction * (currentSpeed * Time.fixedDeltaTime));
     }
 
@@ -208,6 +232,10 @@ public class PlayerController : MonoBehaviour, IDamageable
             groundRadius,
             groundLayer
         );
+
+        if (_isGrounded)
+            animator.SetBool("IsJumping", false);
+
     }
 
     #endregion
@@ -239,12 +267,16 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void DoBasicHit()
     {
+        if (!_isGrounded) return;
+
         if (!_canHitEnemy || _targetInRange == null)
         {
+            animator.SetTrigger("LightPunch");
             PlaySound(missHitsFX);
             return;
         }
 
+        animator.SetTrigger("LightPunch");
         PlaySound(basicHitsFX);
         StartCoroutine(HitStop(hitStopDuration));
         cameraShake?.Shake(basicShakeIntensity, shakeDuration);
@@ -291,6 +323,15 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void ExecuteHeavyHit()
     {
+        if (!_isGrounded) 
+        {
+            _isChargingHeavy = false;
+            _heavyHitExecuted = true;
+            StopLoopSound();
+            return;
+        }
+
+        animator.SetTrigger("HeavyPunch");
         _isChargingHeavy = false;
         _heavyHitExecuted = true;
         StopLoopSound();
@@ -396,8 +437,19 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
+    public void Celebrate()
+    {
+        animator.SetTrigger("Celebrate");
+
+        _inputVector = Vector2.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
+
+        this.enabled = false;
+    }
+
     #endregion
-    
+
     #region === EVENTS ===
     public static event Action<PlayerController> OnPlayerDied;
     #endregion

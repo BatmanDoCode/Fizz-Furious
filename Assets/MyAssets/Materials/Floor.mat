@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Floor
-  m_Shader: {fileID: -6465566751694194690, guid: bf13e9163ea4ce441ad7525bc2ebae84, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,21 +38,21 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Glow_Size: 0.15
-    - _Highlight_Intensity: 0.4
+    - _Glow_Size: 0
+    - _Highlight_Intensity: 0
     - _Highlight_Size: 0.19
-    - _Outline_Size: 0.3
+    - _Outline_Size: 0.09
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Shadows_Contrast: 0.4
-    - _Shadows_Size: 1
+    - _Shadows_Size: 0
     - _XRMotionVectorsPass: 1
     m_Colors:
-    - _Base_Color: {r: 1, g: 0.9411765, b: 0.9607844, a: 1}
+    - _Base_Color: {r: 0.8000001, g: 0.7568628, b: 0.6666667, a: 1}
     - _HighlightColor: {r: 0.990566, g: 0.60275006, b: 0.8182033, a: 1}
-    - _Highlight_Color: {r: 1, g: 0.94117653, b: 0.9607844, a: 0}
-    - _Outline_Color: {r: 0.91372555, g: 0.76470596, b: 0.81568635, a: 1}
-    - _Shadows_Color: {r: 0.9150943, g: 0.7640174, b: 0.8143764, a: 0}
+    - _Highlight_Color: {r: 0.8000001, g: 0.7568628, b: 0.6666667, a: 0}
+    - _Outline_Color: {r: 0.62352943, g: 0.5882353, b: 0.5137255, a: 1}
+    - _Shadows_Color: {r: 0.6226415, g: 0.587484, b: 0.51397294, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7523208459516627033
