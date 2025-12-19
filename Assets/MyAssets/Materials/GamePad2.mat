@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FloorLine
+  m_Name: GamePad2
   m_Shader: {fileID: -6465566751694194690, guid: 11da7def89efc6f42b74e91636c92e30, type: 3}
   m_Parent: {fileID: 2100000, guid: ed362ed18fc53a5469e4607ea094b726, type: 2}
   m_ModifiedSerializedProperties: 0
@@ -26,8 +26,8 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Glow_Size: 0.18
-    - _Highlight_Intensity: 0.4
+    - _Glow_Size: 0.107
+    - _Highlight_Intensity: 0.2
     - _Highlight_Size: 0.19
     - _Outline_Size: 0.19
     - _Shadows_Contrast: 1
