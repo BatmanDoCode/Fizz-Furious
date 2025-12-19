@@ -6,13 +6,18 @@ public class TVlightFlicker : MonoBehaviour
     public float flickerSpeed;
     public float minIntensity;
     public float maxIntensity;
+    public float flickerInterval;
+
+    private float timer;
 
     void Update()
     {
-        if (tvLight != null)
+        timer += Time.deltaTime;
+
+        if (timer >= flickerInterval)
         {
-            float t = Mathf.PingPong(Time.time * flickerSpeed, 1f);
-            tvLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, t);
+            tvLight.intensity = Random.Range(minIntensity, maxIntensity);
+            timer = 0f;
         }
     }
 }
