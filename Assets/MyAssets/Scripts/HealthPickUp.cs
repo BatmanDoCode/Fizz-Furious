@@ -5,6 +5,14 @@ public class HealthPickUp : MonoBehaviour
 {
     [SerializeField] private float healAmount = 30f;
     [SerializeField] private float maxHealthReduction = 10f;
+    
+    [Header("Lifetime")]
+    [SerializeField] private float lifeTime = 5f;
+
+    private void Start()
+    {
+        Destroy(gameObject, lifeTime);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
