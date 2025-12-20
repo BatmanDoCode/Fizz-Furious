@@ -137,15 +137,34 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Vector3 _currentVelocity;
     private Vector3 _moveDirection;
 
+    [SerializeField] private bool faceRight = true;
+    private Transform _movementReference;
+
+    private void Start()
+    {
+        _movementReference = new GameObject("MovementReference").transform;
+        _movementReference.position = transform.position;
+        _movementReference.rotation = transform.rotation;
+
+        if (!faceRight)
+            _movementReference.rotation *= Quaternion.Euler(0f, 180f, 0f);
+    }
+
     private void Update()
     {
         HandleHeavyCharge();
         HandleStamina();
         CheckOutOfBounds();
-        RotateMesh();
 
         Vector2 input = _inputVector;
-        _moveDirection = new Vector3(input.x, 0f, input.y).normalized;
+
+        _moveDirection =
+            _movementReference.forward * input.y +
+            _movementReference.right * input.x;
+
+        _moveDirection = Vector3.ClampMagnitude(_moveDirection, 1f);
+
+        RotateMesh();
     }
 
     private void FixedUpdate()
