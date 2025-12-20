@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #region === STATS ===
 
-    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float maxHealth = 1000f;
     [SerializeField] private float currentHealth;
 
     #endregion
@@ -130,12 +130,22 @@ public class PlayerController : MonoBehaviour, IDamageable
         currentHealth = maxHealth;
 
     }
+    
+    [SerializeField] private float moveSpeed = 6f;
+    [SerializeField] private float acceleration = 10f;
+
+    private Vector3 _currentVelocity;
+    private Vector3 _moveDirection;
 
     private void Update()
     {
         HandleHeavyCharge();
         HandleStamina();
         CheckOutOfBounds();
+        RotateMesh();
+
+        Vector2 input = _inputVector;
+        _moveDirection = new Vector3(input.x, 0f, input.y).normalized;
     }
 
     private void FixedUpdate()
@@ -202,11 +212,25 @@ public class PlayerController : MonoBehaviour, IDamageable
     #endregion
 
     #region === MOVEMENT LOGIC ===
+    
+    [SerializeField] private Transform playerMesh;
+    [SerializeField] private float rotationSpeed = 10f;
+    
+    private void RotateMesh()
+    {
+        if (_moveDirection.sqrMagnitude < 0.01f) return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(_moveDirection);
+
+        playerMesh.rotation = Quaternion.Slerp(
+            playerMesh.rotation,
+            targetRotation,
+            rotationSpeed * Time.deltaTime
+        );
+    }
 
     private void MovePlayer()
     {
-        Vector3 direction = (transform.forward * _inputVector.y) +
-                            (transform.right * _inputVector.x);
 
         float currentSpeed = _isRunning && _currentStamina > 0f ? runSpeed : walkSpeed;
 
@@ -221,8 +245,16 @@ public class PlayerController : MonoBehaviour, IDamageable
             animator.SetFloat("Speed", 0f);
             animator.SetBool("IsRunning", false);
         }
+        
+        Vector3 targetVelocity = _moveDirection * moveSpeed;
 
-        rb.MovePosition(rb.position + direction * (currentSpeed * Time.fixedDeltaTime));
+        _currentVelocity = Vector3.Lerp(
+            _currentVelocity,
+            targetVelocity,
+            acceleration * Time.fixedDeltaTime
+        );
+
+        rb.MovePosition(rb.position + _currentVelocity * Time.fixedDeltaTime);
     }
 
     private void CheckGround()
