@@ -53,7 +53,10 @@ public class GameManager : MonoBehaviour
 
             Camera cam = player.GetComponentInChildren<Camera>();
             if (cam != null)
+            {
                 cam.gameObject.SetActive(false);
+                Destroy(cam.gameObject);
+            }
         }
     }
 }
