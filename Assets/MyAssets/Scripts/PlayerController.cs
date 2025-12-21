@@ -3,6 +3,8 @@ using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using TMPro;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
@@ -114,6 +116,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [SerializeField] private float maxHealth = 1000f;
     [SerializeField] private float currentHealth;
+    
+    public Slider healthBar;
+    [SerializeField] private TMP_Text healthText;
 
     #endregion
 
@@ -139,6 +144,11 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [SerializeField] private bool faceRight = true;
     private Transform _movementReference;
+    
+    [SerializeField] private Transform cameraFollow;
+    [SerializeField] private Vector3 cameraOffset;
+
+    private Vector3 _lastPosition;
 
     private void Start()
     {
@@ -148,6 +158,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (!faceRight)
             _movementReference.rotation *= Quaternion.Euler(0f, 180f, 0f);
+        
+        _lastPosition = transform.position;
     }
 
     private void Update()
@@ -158,19 +170,38 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         Vector2 input = _inputVector;
 
-        _moveDirection =
-            _movementReference.forward * input.y +
-            _movementReference.right * input.x;
+// Movimiento en mundo (cámara lateral)
+        _moveDirection = new Vector3(
+            -input.y,   // A / D → izquierda / derecha
+            0f,
+            input.x    // W / S → arriba / abajo
+        );
 
         _moveDirection = Vector3.ClampMagnitude(_moveDirection, 1f);
 
         RotateMesh();
+        
+        healthText.text = currentHealth + " / " + maxHealth;
+        healthBar.value = (float)currentHealth / (float)maxHealth;
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
         CheckGround();
+    }
+    
+    private void LateUpdate()
+    {
+        Vector3 delta = transform.position - _lastPosition;
+
+        // Solo mover el follow si el player REALMENTE se movió
+        if (delta.sqrMagnitude > 0.0001f)
+        {
+            cameraFollow.position = transform.position + cameraOffset;
+        }
+
+        _lastPosition = transform.position;
     }
 
     #endregion
