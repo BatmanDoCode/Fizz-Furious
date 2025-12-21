@@ -165,9 +165,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         Vector2 input = _inputVector;
 
-        _moveDirection =
-            _movementReference.forward * input.y +
-            _movementReference.right * input.x;
+// Movimiento en mundo (cámara lateral)
+        _moveDirection = new Vector3(
+            -input.y,   // A / D → izquierda / derecha
+            0f,
+            input.x    // W / S → arriba / abajo
+        );
 
         _moveDirection = Vector3.ClampMagnitude(_moveDirection, 1f);
 
