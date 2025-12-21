@@ -225,6 +225,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void OnJump(InputAction.CallbackContext context)
     {
+ 
         if (context.started && _isGrounded)
             { 
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -234,6 +235,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void OnBasicHit(InputAction.CallbackContext context)
     {
+
         if (context.started)
             DoBasicHit();
     }
@@ -602,4 +604,19 @@ public class PlayerController : MonoBehaviour, IDamageable
         audioSource.Stop();
     }
     #endregion
+
+    private bool isControlEnabled = true;
+
+    public void DisableControl()
+    {
+        isControlEnabled = false;
+        _inputVector = Vector2.zero;
+        animator.SetFloat("Speed", 0f);
+        animator.SetBool("IsRunning", false);
+    }
+
+    public void EnableControl()
+    {
+        isControlEnabled = true;
+    }
 }

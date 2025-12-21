@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class CharacterSelectionManager : MonoBehaviour
 {
@@ -28,13 +30,24 @@ public class CharacterSelectionManager : MonoBehaviour
     public string selectedCharacterP1;
     public string selectedCharacterP2;
 
-    public GameObject startButton;
+    public CanvasGroup startButtonCanvasGroup;
+
+    public AudioClip moveSound;
+    public AudioClip confirmSound;
+    public AudioClip startMatchSound;
+
+    public CanvasGroup fadeCanvasGroup;
+    public float fadeDuration;
+
+    public GameObject uiElementsToHide;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         SpawnCharacters();
-        startButton.SetActive(false);
+        startButtonCanvasGroup.alpha = 0.5f;
+        startButtonCanvasGroup.interactable = false;
+        startButtonCanvasGroup.blocksRaycasts = false;
     }
 
     // Update is called once per frame
@@ -42,21 +55,30 @@ public class CharacterSelectionManager : MonoBehaviour
     {
         if (!p1Locked)
         {
-            if (Input.GetKeyDown(KeyCode.A)) ChangeCharacter(1, -1);
-            if (Input.GetKeyDown(KeyCode.D)) ChangeCharacter(1, 1);
-            if (Input.GetKeyDown(KeyCode.W)) LockCharacter(1);
+            if (Input.GetKeyDown(KeyCode.A)) { ChangeCharacter(1, -1); SFXManagerSelection.instance.PlaySFX(moveSound); }
+            if (Input.GetKeyDown(KeyCode.D)) { ChangeCharacter(1, 1); SFXManagerSelection.instance.PlaySFX(moveSound); }
+            if (Input.GetKeyDown(KeyCode.W)) { LockCharacter(1); SFXManagerSelection.instance.PlaySFX(confirmSound); }
         }
 
         if (!p2Locked)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow)) ChangeCharacter(2, -1);
-            if (Input.GetKeyDown(KeyCode.RightArrow)) ChangeCharacter(2, 1);
-            if (Input.GetKeyDown(KeyCode.UpArrow)) LockCharacter(2);
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) { ChangeCharacter(2, -1); SFXManagerSelection.instance.PlaySFX(moveSound); }
+            if (Input.GetKeyDown(KeyCode.RightArrow)) { ChangeCharacter(2, 1); SFXManagerSelection.instance.PlaySFX(moveSound); }
+            if (Input.GetKeyDown(KeyCode.UpArrow)) { LockCharacter(2); SFXManagerSelection.instance.PlaySFX(confirmSound); }
         }
+
 
         if (p1Locked && p2Locked)
         {
-            startButton.SetActive(true);
+            startButtonCanvasGroup.alpha = 1f;
+            startButtonCanvasGroup.interactable = true;
+            startButtonCanvasGroup.blocksRaycasts = true;
+        }
+        else
+        {
+            startButtonCanvasGroup.alpha = 0.5f;
+            startButtonCanvasGroup.interactable = false;
+            startButtonCanvasGroup.blocksRaycasts = false;
         }
     }
 
@@ -108,8 +130,29 @@ public class CharacterSelectionManager : MonoBehaviour
 
     public void StartMatch()
     {
+        StartCoroutine(StartMatchRoutine());
+    }
+
+    IEnumerator StartMatchRoutine()
+    {
+        SFXManagerSelection.instance.PlaySFX(startMatchSound);
+
+        if (uiElementsToHide != null)
+        {
+            uiElementsToHide.SetActive(false);
+        }
+
+        float timer = 0f;
+        while (timer < fadeDuration)
+        {
+            timer += Time.deltaTime;
+            fadeCanvasGroup.alpha = Mathf.Lerp(0, 1, timer / fadeDuration);
+            yield return null;
+        }
+
         SceneManager.LoadScene("FirstScene");
     }
+
 
     void SetSelectionRotation(GameObject model, float yRotation)
     {

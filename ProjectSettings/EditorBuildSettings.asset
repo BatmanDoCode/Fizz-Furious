@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SelectCharacter.unity
     guid: 9cf599f9818250d45a2303e38dac9fb5
+  - enabled: 1
+    path: Assets/Scenes/CoverScreen.unity
+    guid: 8f37c4f37e5bbcd4b87663c1e6f94873
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
