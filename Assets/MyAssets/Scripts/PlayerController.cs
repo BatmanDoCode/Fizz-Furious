@@ -3,6 +3,8 @@ using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using TMPro;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
@@ -114,6 +116,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [SerializeField] private float maxHealth = 1000f;
     [SerializeField] private float currentHealth;
+    
+    public Slider healthBar;
+    [SerializeField] private TMP_Text healthText;
 
     #endregion
 
@@ -175,6 +180,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         _moveDirection = Vector3.ClampMagnitude(_moveDirection, 1f);
 
         RotateMesh();
+        
+        healthText.text = currentHealth + " / " + maxHealth;
+        healthBar.value = (float)currentHealth / (float)maxHealth;
     }
 
     private void FixedUpdate()
