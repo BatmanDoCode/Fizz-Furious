@@ -139,6 +139,11 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [SerializeField] private bool faceRight = true;
     private Transform _movementReference;
+    
+    [SerializeField] private Transform cameraFollow;
+    [SerializeField] private Vector3 cameraOffset;
+
+    private Vector3 _lastPosition;
 
     private void Start()
     {
@@ -148,6 +153,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (!faceRight)
             _movementReference.rotation *= Quaternion.Euler(0f, 180f, 0f);
+        
+        _lastPosition = transform.position;
     }
 
     private void Update()
@@ -171,6 +178,19 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         MovePlayer();
         CheckGround();
+    }
+    
+    private void LateUpdate()
+    {
+        Vector3 delta = transform.position - _lastPosition;
+
+        // Solo mover el follow si el player REALMENTE se movió
+        if (delta.sqrMagnitude > 0.0001f)
+        {
+            cameraFollow.position = transform.position + cameraOffset;
+        }
+
+        _lastPosition = transform.position;
     }
 
     #endregion
