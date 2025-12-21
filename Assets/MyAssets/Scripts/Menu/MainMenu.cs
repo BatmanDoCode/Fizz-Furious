@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviour
 {
-    public string sceneToLoad = "FirstScene";
+    public string sceneToLoad = "SelectCharacter";
     public void StartGame()
     {
         SceneManager.LoadScene(sceneToLoad);

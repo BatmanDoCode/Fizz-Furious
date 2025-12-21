@@ -10,6 +10,12 @@ public class CharacterSelectionManager : MonoBehaviour
     public Transform player1Spawn;
     public Transform player2Spawn;
 
+    [Header("Rotación visual")]
+    public float rotationY_P1;
+    public float rotationY_P2;
+
+    public float selectionScale;
+
     private int p1Index = 0;
     private int p2Index = 0;
 
@@ -61,12 +67,16 @@ public class CharacterSelectionManager : MonoBehaviour
             Destroy(p1Model);
             p1Index = (p1Index + direction + characterPrefabs.Length) % characterPrefabs.Length;
             p1Model = Instantiate(characterPrefabs[p1Index], player1Spawn.position, Quaternion.identity);
+            p1Model.transform.localScale = Vector3.one * selectionScale;
+            SetSelectionRotation(p1Model, rotationY_P1);
         }
         else if (player == 2)
         {
             Destroy(p2Model);
             p2Index = (p2Index + direction + characterPrefabs.Length) % characterPrefabs.Length;
             p2Model = Instantiate(characterPrefabs[p2Index], player2Spawn.position, Quaternion.identity);
+            p2Model.transform.localScale = Vector3.one * selectionScale;
+            SetSelectionRotation(p2Model, rotationY_P2);
         }
     }
 
@@ -74,6 +84,12 @@ public class CharacterSelectionManager : MonoBehaviour
     {
         p1Model = Instantiate(characterPrefabs[p1Index], player1Spawn.position, Quaternion.identity);
         p2Model = Instantiate(characterPrefabs[p2Index], player2Spawn.position, Quaternion.identity);
+
+        p1Model.transform.localScale = Vector3.one * selectionScale;
+        p2Model.transform.localScale = Vector3.one * selectionScale;
+
+        SetSelectionRotation(p1Model, rotationY_P1);
+        SetSelectionRotation(p2Model, rotationY_P2);
     }
 
     void LockCharacter(int player)
@@ -93,5 +109,10 @@ public class CharacterSelectionManager : MonoBehaviour
     public void StartMatch()
     {
         SceneManager.LoadScene("FirstScene");
+    }
+
+    void SetSelectionRotation(GameObject model, float yRotation)
+    {
+        model.transform.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 }
